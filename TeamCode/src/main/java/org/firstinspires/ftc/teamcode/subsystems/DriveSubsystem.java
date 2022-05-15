@@ -13,10 +13,10 @@ public class DriveSubsystem extends SubsystemBase {
     // Constructor takes in hardware that makes up the subsystem
     // You can think of constructors as initializing objects
     public DriveSubsystem(Motor fL, Motor fR, Motor bL, Motor bR, RevIMU imu){
-        fL = frontLeft;
-        fR = frontRight;
-        bL = backLeft;
-        bR = backRight;
+        frontLeft = fL;
+        frontRight = fR;
+        backLeft = bL;
+        backRight = bR;
 
         imu = revIMU;
 
