@@ -3,17 +3,16 @@ package org.firstinspires.ftc.teamcode;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.CommandOpMode;
+import com.arcrobotics.ftclib.command.RunCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.hardware.RevIMU;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.commands.rr.MecanumDriveCommand;
-import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
-import org.firstinspires.ftc.teamcode.subsystems.rr.MecanumDriveSubsystem;
+import org.firstinspires.ftc.teamcode.commands.DriveCommand;
+import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem;
 
 // P.S. Collapsable regions: if you see a comment that reads //region [name], click the '-' button to the left to collapse it.
 
@@ -36,10 +35,10 @@ public class MainTeleOp extends CommandOpMode {
     private Motor frontLeft, frontRight, backLeft, backRight; // Driving motors
 
     // ⬇ Add subsystems here ⬇ //
-    private MecanumDriveSubsystem mecanumDriveSubsystem; // Adds functionality for the robot to move using Mecanum Drive
+    private DriveSubsystem driveSubsystem; // Adds functionality for the robot to move
 
     // ⬇ Add commands here ⬇ //
-
+    private DriveCommand driveCommand; // TODO: Make comment better: Adds commands to act upon functionality, given by subsystem
 
     // Feedback and Input
     private GamepadEx gPad1;
@@ -52,6 +51,8 @@ public class MainTeleOp extends CommandOpMode {
     //region Constants
     private final double DRIVE_MULT = 1.0; // How fast you want the motor to spin normally
     private final double SLOW_MULT = 0.5; // How fast you want the motor to spin when slow button is pressed
+
+    //endregion
 
     @Override
     public void initialize() {
@@ -75,14 +76,14 @@ public class MainTeleOp extends CommandOpMode {
 
         // Configuring Motors //
         frontLeft.motor.setDirection(DcMotor.Direction.FORWARD);
-        // frontRight.motor.setDirection(DcMotor.Direction.FORWARD); // TODO: Uncomment later
+        frontRight.motor.setDirection(DcMotor.Direction.FORWARD);
         backLeft.motor.setDirection(DcMotor.Direction.FORWARD);
-        // backRight.motor.setDirection(DcMotor.Direction.FORWARD);
+        backRight.motor.setDirection(DcMotor.Direction.FORWARD);
 
-        // frontLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
-        // frontRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
-        // backLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
-        // backRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+        frontLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+        frontRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+        backLeft.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+        backRight.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
 
         frontLeft.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -98,21 +99,19 @@ public class MainTeleOp extends CommandOpMode {
         time = new ElapsedTime();
 
         // ⬇ Initialize Subsystems and Commands ⬇ //
-        mecanumDriveSubsystem = new MecanumDriveSubsystem(new SampleMecanumDrive(hardwareMap), false);
+        driveSubsystem = new DriveSubsystem(frontLeft, frontRight, backLeft, backRight, imu);
+
+        driveCommand = new DriveCommand(driveSubsystem, gPad1::getLeftX, gPad1::getLeftY, gPad1::getRightX, DRIVE_MULT);
 
         /*
         ▒█▀▀█ █▀▀█ █▀▄▀█ █▀▀ █▀▀█ █▀▀█ █▀▀▄
         ▒█░▄▄ █▄▄█ █░▀░█ █▀▀ █░░█ █▄▄█ █░░█
         ▒█▄▄█ ▀░░▀ ▀░░░▀ ▀▀▀ █▀▀▀ ▀░░▀ ▀▀▀░
          */
+        //  ⬇ Add stuff for gamepad buttons here ⬇ //
+        //TODO I don't need to write anything here for now right?
 
-
-
+        register(driveSubsystem);
+        driveSubsystem.setDefaultCommand(driveCommand);
     }
-
-    //endregion
-
-
-
-
 }
